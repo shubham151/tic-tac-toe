@@ -10,6 +10,9 @@ const initialBoard = [
   [null, null, null],
   [null, null, null],
 ];
+
+const PLAYERS = { X: "Player 1", O: "Player 2" };
+
 function getCurrentActivePlayer(gameTurn) {
   let currentActive = "X";
   if (gameTurn.length > 0 && gameTurn[0].player == "X") {
@@ -32,18 +35,23 @@ function checkWinner(combinations, gameBoard) {
   return;
 }
 
-function App() {
-  const [players, setPlayers] = useState({ X: "Player 1", O: "Player 2" });
-  let gameBoard = [...initialBoard.map((inner) => [...inner])];
-  const [gameTurn, setGameTurn] = useState([]);
-  const activePlayer = getCurrentActivePlayer(gameTurn);
-
+function deriveGameBoard(gameTurn) {
+  const gameBoard = [...initialBoard.map((inner) => [...inner])];
   for (const turn of gameTurn) {
     const { square, player } = turn;
     const { row, col } = square;
     gameBoard[row][col] = player;
   }
 
+  return gameBoard;
+}
+
+function App() {
+  const [players, setPlayers] = useState(PLAYERS);
+
+  const [gameTurn, setGameTurn] = useState([]);
+  const activePlayer = getCurrentActivePlayer(gameTurn);
+  const gameBoard = deriveGameBoard(gameTurn);
   const winner = checkWinner(WINNING_COMBINATIONS, gameBoard);
   const draw = gameTurn.length == 9;
 
